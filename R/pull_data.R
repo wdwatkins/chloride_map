@@ -6,6 +6,7 @@ drb_poly <- sf::st_read('../delaware-basin-processing/DRB_Extent.shp') %>%
   st_transform(4326)
 drb_bbox <- sf::st_bbox(drb_poly)
 
+#summary for one state
 wqp_summary <- readWQPdata(statecode="DE",
                            characteristicName="Chloride",
                            startDateLo = '2010-01-01',
@@ -15,6 +16,7 @@ wqp_summary <- readWQPdata(statecode="DE",
 drb_states <- c("PA", "DE", "NJ", "NY")
 all_results <- tibble()
 all_locations <- tibble()
+#pull sample data and site data for each state, combine
 for(state in drb_states) {
   state_results <- readWQPdata(statecode=state,
                     characteristicName="Chloride",
@@ -56,13 +58,14 @@ city_df <- tibble(city = c("Wilmington", "Philadelphia"),
                   lat = c(39.74, 39.95),
                   lon = c(-75.55, -75.16))
 st_bbox(results_gt250)
+
+#histogram
 ggplot(results_gt250, aes(x = month)) + geom_bar() +
   labs(x="Month", y = "Chloride samples > 250 mg/L", 
        title = "Chloride samples exceeding EPA drinking water threshold",
        subtitle = "Delaware Basin above Wilmington, DE, 2010-2020")
 
-#plot each month separately
-#animation and bar chart by month
+
 plot(drb_poly$geometry, ylim = c(39.5, 40.3))
 plot(drb_flow$geometry, add=TRUE, col = "blue")
 points(city_df$lon, city_df$lat, pch = 15, cex=2)
@@ -70,8 +73,9 @@ plot(results_gt250$geometry, col="red", cex = 1, add=TRUE,
      pch=16)
 title(main = "Chloride samples exceeding EPA drinking water threshold",
       sub = paste("2010-2020"))
-legend()
 
+#plot each month separately
+#animation and bar chart by month
 i <- 1
 for(this_month in month.name[c(10:12, 1:9)]) {
   month_df <- filter(results_gt250, month == this_month)
