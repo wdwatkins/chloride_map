@@ -61,13 +61,17 @@ ggplot(results_gt250, aes(x = month)) + geom_bar() +
        title = "Chloride samples exceeding EPA drinking water threshold",
        subtitle = "Delaware Basin above Wilmington, DE, 2010-2020")
 
-#TODO: plot each month separately
-#TODO: animation and bar chart by month
+#plot each month separately
+#animation and bar chart by month
 plot(drb_poly$geometry, ylim = c(39.5, 40.3))
 plot(drb_flow$geometry, add=TRUE, col = "blue")
 points(city_df$lon, city_df$lat, pch = 15, cex=2)
-plot(results_gt250$geometry, col="red", cex = results_gt250$rescale_cex, add=TRUE,
+plot(results_gt250$geometry, col="red", cex = 1, add=TRUE,
      pch=16)
+title(main = "Chloride samples exceeding EPA drinking water threshold",
+      sub = paste("2010-2020"))
+legend()
+
 i <- 1
 for(this_month in month.name[c(10:12, 1:9)]) {
   month_df <- filter(results_gt250, month == this_month)
@@ -75,7 +79,7 @@ for(this_month in month.name[c(10:12, 1:9)]) {
   png(filename = sprintf("%02d_%s.png", i, this_month))
   plot(drb_poly$geometry, ylim = c(39.5, 40.3))
   plot(drb_flow$geometry, add=TRUE, col = "blue")
-  plot(month_df$geometry, col="red", cex = month_df$rescale_cex, add=TRUE,
+  plot(month_df$geometry, col="red", cex = 2, add=TRUE,
        pch=16)
   points(city_df$lon, city_df$lat, pch = 15, cex=2)
   title(main = "Chloride samples exceeding EPA drinking water threshold",
